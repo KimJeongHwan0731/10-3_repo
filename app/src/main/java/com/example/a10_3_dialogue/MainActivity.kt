@@ -4,7 +4,10 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog.show
 import android.app.TimePickerDialog
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,9 +21,11 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import com.example.a10_3_dialogue.databinding.ActivityMainBinding
 import com.example.a10_3_dialogue.databinding.RegisterLayoutBinding
 import com.example.a10_3_dialogue.databinding.ToastLayoutBinding
+import java.net.URI
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener {
@@ -38,6 +43,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog
         binding.btnMultiItemDialog.setOnClickListener(this)
         binding.btnSingleItemDialog.setOnClickListener(this)
         binding.btnCustomDialog.setOnClickListener(this)
+        binding.btnFindLocate.setOnClickListener(this)
+        binding.btnRington.setOnClickListener(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -193,6 +200,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog
                     binding.tvMessage.text = userBinding.edtName.text.toString()
                     userDialog.dismiss()
                 }
+            }
+            R.id.btnFindLocate -> {
+                val state = ContextCompat.checkSelfPermission(applicationContext, "android.permission.ACCESS_FINE_LOCATION")
+                if(state == PackageManager.PERMISSION_GRANTED){
+                    binding.tvMessage.text = "위치추적권한허용"
+                } else{
+                    binding.tvMessage.text = "위치추적권한불허"
+                }
+            }
+            R.id.btnRington -> {
+                // Uniform Resource Identifier, 리소스를 구분하는 식별자.
+                // 안드로이드에서 URI의 역할은 리소스(외부 앱, 이미지, 텍스트 등)에 접근할 수 있는 식별자 역할
+                var notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                val ringtone = RingtoneManager.getRingtone(applicationContext,notificationUri)
+                ringtone.play()
             }
         }
     }
